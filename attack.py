@@ -11,17 +11,17 @@ if __name__ == "__main__":
     flag = ""
     while FLAG_PATTERN.fullmatch(flag) is None:
         baseline_plaintext = "Q" * (
-            BLOCK_SIZE + (BLOCK_SIZE - 1) - (len(flag) % BLOCK_SIZE)
+                BLOCK_SIZE + (BLOCK_SIZE - 1) - (len(flag) % BLOCK_SIZE)
         )
         baseline_ciphertext = sender.send(baseline_plaintext)
-        print(baseline_plaintext, "-->", baseline_ciphertext)
+        print("Baseline |", baseline_plaintext[16:], "-->", baseline_ciphertext[1:])
 
         for c in string.printable:
             guess_plaintext = baseline_plaintext + flag + c
             guess_ciphertext = sender.send(guess_plaintext)
-            print(guess_plaintext, "-->", guess_ciphertext)
+            print("Guess |", guess_plaintext[16:], "-->", guess_ciphertext[1:])
             chunk_num = 1 + (len(flag) // 16)
             if baseline_ciphertext[chunk_num] == guess_ciphertext[chunk_num]:
                 flag += c
-                print(flag)
+                print(" | ".join(["Match", "Block: " + str(chunk_num), "Character: " + c, "Updated Flag: " + flag]) + '\n')
                 break
